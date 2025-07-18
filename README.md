@@ -2,7 +2,7 @@
 
 &#x20;&#x20;
 
-## Overview
+## Overview                                                              **Visit the App:** [diabetes-prediction-app](https://diabetes-risk-predict.streamlit.app/)
 
 A clinically motivated machine learning system designed to predict diabetes risk using clinical and lifestyle indicators. This project uses advanced ensemble learning, medical-cost-aware optimization, and interpretable modeling techniques to support early diabetes screening aligned with current medical standards.
 
@@ -154,7 +154,7 @@ Data Preprocessing → Medical Feature Engineering → Feature Selection → Mod
 
 \*Updated: July 2025 – by\* [*Chiezie Arthur Ezenwaegbu*](mailto\:chiezie.arthur@gmail.com)
 
-**Visit the App:** [diabetes-prediction-app](https://diabetes-risk-predict.streamlit.app/)
+**App Link:** [diabetes-prediction-app](https://diabetes-risk-predict.streamlit.app/)
 
 **License:** MIT | **Disclaimer:** For educational/research & screening use only.
 
