@@ -598,36 +598,17 @@ def main():
     # Header
     st.markdown('<div class="main-header">🏥 Diabetes Risk Assessment System</div>', unsafe_allow_html=True)
 
-    # # Home button - show only when prediction_made is True
-    # with st.sidebar:
-    #     if st.session_state.get('prediction_made', False):
-    #         if st.button("🏠 Return to Home", key="home_button", use_container_width=True):
-    #             st.session_state.prediction_made = False
-    #             # Clear all prediction-related session state
-    #             for key in ['current_patient_data', 'current_results', 'show_report']:
-    #                 if key in st.session_state:
-    #                     del st.session_state[key]
-    #             st.rerun()
-    #         st.markdown("---")
-              
-    # # Sidebar for input
-    # st.sidebar.header("📝 Patient Information")
-    # st.sidebar.markdown("Enter patient details below:")
-
-    # FIXED: Home button logic - moved to main area and improved
-    if st.session_state.get('prediction_made', False):
-        # Show home button in main area when prediction is made
-        col1, col2, col3 = st.columns([1, 1, 1])
-        with col2:
-            if st.button("🏠 Return to Home", key="home_button", type="secondary", use_container_width=True):
-                # Reset all prediction-related state
+    # Home button - show only when prediction_made is True
+    with st.sidebar:
+        if st.session_state.get('prediction_made', False):
+            if st.button("🏠 Return to Home", key="home_button", use_container_width=True):
                 st.session_state.prediction_made = False
-                st.session_state.show_report = False
-                st.session_state.current_patient_data = {}
-                st.session_state.current_results = {}
-                st.session_state.current_report = ""
+                # Clear all prediction-related session state
+                for key in ['current_patient_data', 'current_results', 'show_report']:
+                    if key in st.session_state:
+                        del st.session_state[key]
                 st.rerun()
-        st.markdown("---")
+            st.markdown("---")
               
     # Sidebar for input
     st.sidebar.header("📝 Patient Information")
@@ -700,15 +681,18 @@ def main():
                     with st.expander("Debug Information"):
                         st.write("Patient data:", patient_data)
                         st.write("Error details:", results['error'])
+
                 else:
                     # Store data for report generation
                     st.session_state.current_patient_data = patient_data
                     st.session_state.current_results = results
                     st.session_state.prediction_made = True
                     st.session_state.show_report = False  # Reset report flag
-                    
+                
+                    st.rerun()  # ✅ Force rerender so Home button appears immediately
+                
                     st.success("✅ Risk assessment completed successfully!")
-                    
+  
                     # Display results
                     col1, col2 = st.columns([2, 1])
                     
