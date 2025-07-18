@@ -154,5 +154,7 @@ Data Preprocessing → Medical Feature Engineering → Feature Selection → Mod
 
 \*Updated: July 2025 – by \*[*Chiezie Arthur Ezenwaegbu*](mailto\:chiezie.arthur@gmail.com)
 
+**Visit the App:** [diabetes-prediction-app](https://diabetes-risk-predict.streamlit.app/)
+
 **License:** MIT | **Disclaimer:** For educational/research & screening use only.
 
