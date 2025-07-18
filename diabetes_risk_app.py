@@ -412,18 +412,14 @@ def generate_comprehensive_report(patient_data, results, preprocessor):
             uncertainty_info = results.get('uncertainty_info', {})
             imputed_values = uncertainty_info.get('imputed_values', {})
             
-            # DEBUG: Print what we actually have
-            print(f"DEBUG - imputed_features: {imputed_features}")
-            print(f"DEBUG - imputed_values: {imputed_values}")
-            print(f"DEBUG - imputed_values type: {type(imputed_values)}")
-            
             for feature in imputed_features:
                 original_value = patient_data.get(feature, 'Unknown')
                 imputed_value = imputed_values.get(feature, 'Unknown')
                 
-                print(f"DEBUG - {feature}: original={original_value}, imputed={imputed_value}")
-                
                 if imputed_value != 'Unknown':
+                    # Round to 2 decimal places for display
+                    if isinstance(imputed_value, (int, float)):
+                        imputed_value = round(imputed_value, 2)
                     imputation_details += f"- {feature}: {original_value} (Estimation: {imputed_value} - uncertainty quantified)\n"
                 else:
                     imputation_details += f"- {feature}: {original_value} (Estimated - uncertainty quantified)\n"
