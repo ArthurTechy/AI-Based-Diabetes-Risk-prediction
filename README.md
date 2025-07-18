@@ -152,7 +152,7 @@ Data Preprocessing → Medical Feature Engineering → Feature Selection → Mod
 
 ---
 
-\*Updated: June 2025 – by \*[*Chiezie Arthur Ezenwaegbu*](mailto\:chiezie.arthur@gmail.com)
+\*Updated: July 2025 – by \*[*Chiezie Arthur Ezenwaegbu*](mailto\:chiezie.arthur@gmail.com)
 
-**License:** MIT | **Disclaimer:** For educational and research use only.
+**License:** MIT | **Disclaimer:** For educational/research & screening use only.
 
