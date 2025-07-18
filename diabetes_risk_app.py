@@ -414,7 +414,19 @@ def generate_comprehensive_report(patient_data, results, preprocessor):
             
             for feature in imputed_features:
                 original_value = patient_data.get(feature, 'Unknown')
-                imputed_value = imputed_values.get(feature, 'Unknown')
+                
+                # Handle both dict and numpy array cases
+                if isinstance(imputed_values, dict):
+                    imputed_value = imputed_values.get(feature, 'Unknown')
+                elif isinstance(imputed_values, np.ndarray):
+                    # If it's an array, we need to match feature to index
+                    try:
+                        feature_idx = list(patient_data.keys()).index(feature)
+                        imputed_value = round(imputed_values[feature_idx], 2) if feature_idx < len(imputed_values) else 'Unknown'
+                    except (ValueError, IndexError):
+                        imputed_value = 'Unknown'
+                else:
+                    imputed_value = 'Unknown'
                 
                 if imputed_value != 'Unknown':
                     imputation_details += f"- {feature}: {original_value} (Estimation: {imputed_value} - uncertainty quantified)\n"
@@ -524,7 +536,11 @@ Generated: {current_time}
 ERROR GENERATING DETAILED REPORT: {str(e)}
 
 BASIC RESULTS:
-- Risk Probability: {results.get('risk_probability', 'Unknown')}
+risk_prob = results.get('risk_probability', 'Unknown')
+if isinstance(risk_prob, (int, float)):
+    f"- Risk Probability: {risk_prob:.2f}"
+else:
+    f"- Risk Probability: {risk_prob}"
 - Risk Classification: {results.get('risk_category', 'Unknown')}
 - Recommendation: {results.get('recommendation', 'Unknown')}
 
