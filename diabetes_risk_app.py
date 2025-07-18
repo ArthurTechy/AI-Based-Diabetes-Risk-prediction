@@ -672,105 +672,103 @@ def main():
                     'DiabetesPedigreeFunction': diabetes_pedigree,
                     'Age': age
                 }
-                
+    
                 # Make prediction
                 results = predict_diabetes_risk(patient_data, preprocessor, model, threshold)
-                
+    
                 if 'error' in results:
                     st.error(f"❌ Error in prediction: {results['error']}")
                     with st.expander("Debug Information"):
                         st.write("Patient data:", patient_data)
                         st.write("Error details:", results['error'])
-
                 else:
-                    # Store data for report generation
+                    # Store data in session_state
                     st.session_state.current_patient_data = patient_data
                     st.session_state.current_results = results
                     st.session_state.prediction_made = True
                     st.session_state.show_report = False  # Reset report flag
-                
-                    st.rerun()  # ✅ Force rerender so Home button appears immediately
-                
-                    st.success("✅ Risk assessment completed successfully!")
-  
-                    # Display results
-                    col1, col2 = st.columns([2, 1])
-                    
-                    with col1:
-                        st.subheader("📊 Risk Assessment Results")
-                        
-                        # Risk card
-                        risk_card_html = f"""
-                        <div class="risk-card {results['css_class']}">
-                            <h3>{results['color']} {results['risk_category']}</h3>
-                            <p><strong>Risk Probability:</strong> {results['risk_probability']:.1%}</p>
-                            <p><strong>Prediction Confidence:</strong> {results['confidence']:.1%}</p>
-                            <p><strong>Recommendation:</strong> {results['recommendation']}</p>
-                        </div>
-                        """
-                        st.markdown(risk_card_html, unsafe_allow_html=True)
-                        
-                        # Detailed interpretation
-                        st.subheader("📋 Detailed Interpretation")
-                        
-                        if results['prediction'] == 1:
-                            st.warning(f"""
-                            **⚠️ Positive Diabetes Risk Indicator**
-                            
-                            - This patient has a **{results['risk_probability']:.1%}** probability of having diabetes
-                            - Based on the optimal threshold ({results['threshold_used']:.3f}), this patient is **classified as likely to have diabetes**
-                            - **Prediction confidence: {results['confidence']:.1%}**
-                            - **Further medical evaluation is recommended**
-                            """)
-                        else:
-                            st.success(f"""
-                            **✅ Negative Diabetes Risk Indicator**
-                            
-                            - This patient has a **{results['risk_probability']:.1%}** probability of having diabetes
-                            - Based on the optimal threshold ({results['threshold_used']:.3f}), this patient is **classified as unlikely to have diabetes**
-                            - **Prediction confidence: {results['confidence']:.1%}**
-                            - **Continue with regular health monitoring**
-                            """)
-                        
-                        # Show imputed features if any
-                        if results['imputed_features']:
-                            st.info(f"📝 **Note:** The following features were estimated due to missing/zero values: {', '.join(results['imputed_features'])}")
-                    
-                    with col2:
-                        st.subheader("🎯 Risk Gauge")
-                        gauge_fig = create_risk_gauge(results['risk_probability'])
-                        st.plotly_chart(gauge_fig, use_container_width=True)
-
-                    # Feature importance chart
-                    st.subheader("📈 Feature Importance Analysis")
-                    importance_fig = create_feature_importance_chart(preprocessor, model, patient_data)
-                    st.plotly_chart(importance_fig, use_container_width=True)
-                    
-                    # Patient data summary
-                    st.subheader("📄 Patient Data Summary")
-                    
-                    col1, col2, col3, col4 = st.columns(4)
-                    
-                    with col1:
-                        st.metric("Age", f"{age} years")
-                        st.metric("Pregnancies", pregnancies)
-                    
-                    with col2:
-                        st.metric("Glucose", f"{glucose} mg/dL")
-                        st.metric("Blood Pressure", f"{blood_pressure} mm Hg")
-                    
-                    with col3:
-                        st.metric("BMI", f"{bmi:.1f}")
-                        st.metric("Insulin", f"{insulin} mu U/ml")
-                    
-                    with col4:
-                        st.metric("Skin Thickness", f"{skin_thickness} mm")
-                        st.metric("Diabetes Pedigree", f"{diabetes_pedigree:.3f}")
-                    
+    
             except Exception as e:
                 st.error(f"❌ Unexpected error during prediction: {str(e)}")
                 with st.expander("Debug Information"):
                     st.code(traceback.format_exc())
+    
+    
+    # 📊 Display prediction results if already made
+    if st.session_state.get('prediction_made') and st.session_state.get('current_results'):
+        results = st.session_state.current_results
+        patient_data = st.session_state.current_patient_data
+    
+        st.success("✅ Risk assessment completed successfully!")
+    
+        col1, col2 = st.columns([2, 1])
+    
+        with col1:
+            st.subheader("📊 Risk Assessment Results")
+    
+            risk_card_html = f"""
+            <div class="risk-card {results['css_class']}">
+                <h3>{results['color']} {results['risk_category']}</h3>
+                <p><strong>Risk Probability:</strong> {results['risk_probability']:.1%}</p>
+                <p><strong>Prediction Confidence:</strong> {results['confidence']:.1%}</p>
+                <p><strong>Recommendation:</strong> {results['recommendation']}</p>
+            </div>
+            """
+            st.markdown(risk_card_html, unsafe_allow_html=True)
+    
+            st.subheader("📋 Detailed Interpretation")
+    
+            if results['prediction'] == 1:
+                st.warning(f"""
+                **⚠️ Positive Diabetes Risk Indicator**
+    
+                - This patient has a **{results['risk_probability']:.1%}** probability of having diabetes
+                - Based on the optimal threshold ({results['threshold_used']:.3f}), this patient is **classified as likely to have diabetes**
+                - **Prediction confidence: {results['confidence']:.1%}**
+                - **Further medical evaluation is recommended**
+                """)
+            else:
+                st.success(f"""
+                **✅ Negative Diabetes Risk Indicator**
+    
+                - This patient has a **{results['risk_probability']:.1%}** probability of having diabetes
+                - Based on the optimal threshold ({results['threshold_used']:.3f}), this patient is **classified as unlikely to have diabetes**
+                - **Prediction confidence: {results['confidence']:.1%}**
+                - **Continue with regular health monitoring**
+                """)
+    
+            if results['imputed_features']:
+                st.info(f"📝 **Note:** The following features were estimated due to missing/zero values: {', '.join(results['imputed_features'])}")
+    
+        with col2:
+            st.subheader("🎯 Risk Gauge")
+            gauge_fig = create_risk_gauge(results['risk_probability'])
+            st.plotly_chart(gauge_fig, use_container_width=True)
+    
+        st.subheader("📈 Feature Importance Analysis")
+        importance_fig = create_feature_importance_chart(preprocessor, model, patient_data)
+        st.plotly_chart(importance_fig, use_container_width=True)
+    
+        st.subheader("📄 Patient Data Summary")
+    
+        col1, col2, col3, col4 = st.columns(4)
+    
+        with col1:
+            st.metric("Age", f"{patient_data['Age']} years")
+            st.metric("Pregnancies", patient_data['Pregnancies'])
+    
+        with col2:
+            st.metric("Glucose", f"{patient_data['Glucose']} mg/dL")
+            st.metric("Blood Pressure", f"{patient_data['BloodPressure']} mm Hg")
+    
+        with col3:
+            st.metric("BMI", f"{patient_data['BMI']:.1f}")
+            st.metric("Insulin", f"{patient_data['Insulin']} mu U/ml")
+    
+        with col4:
+            st.metric("Skin Thickness", f"{patient_data['SkinThickness']} mm")
+            st.metric("Diabetes Pedigree", f"{patient_data['DiabetesPedigreeFunction']:.3f}")
+
 
     # Report generation section - MOVED OUTSIDE prediction block
     if st.session_state.prediction_made and st.session_state.current_patient_data and st.session_state.current_results:
