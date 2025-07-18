@@ -793,16 +793,6 @@ def main():
                         st.session_state.show_report = False
                         st.code(traceback.format_exc())
         
-        # with col2:
-        #     if st.session_state.show_report and st.session_state.current_report:
-        #         st.download_button(
-        #             label="📥 Download Report",
-        #             data=st.session_state.current_report,
-        #             file_name=f"diabetes_risk_report_{datetime.datetime.now(local_tz).strftime('%Y%m%d_%H%M%S')}.txt",
-        #             mime="text/plain",
-        #             key="download_report"
-        #         )
-        
         # Show report if generated
         if st.session_state.show_report and st.session_state.current_report:
             
