@@ -641,7 +641,7 @@ def main():
                                 value=st.session_state.Insulin, 
                                 step=1.0)
         
-        bmi = st.number_input("⚖️ Body mass index", 
+        bmi = st.number_input("⚖️ Body mass index (kg/m^2)", 
                             min_value=0.0, max_value=70.0, 
                             value=st.session_state.BMI, 
                             step=0.1)
